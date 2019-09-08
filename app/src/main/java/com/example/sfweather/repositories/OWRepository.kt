@@ -1,7 +1,7 @@
-package com.example.sfweather.features.weatherDetails.repositories
+package com.example.sfweather.repositories
 
 import com.example.sfweather.BuildConfig
-import com.example.sfweather.features.weatherDetails.models.OWResult
+import com.example.sfweather.models.OWResult
 import io.reactivex.Single
 import okhttp3.HttpUrl
 import okhttp3.Interceptor

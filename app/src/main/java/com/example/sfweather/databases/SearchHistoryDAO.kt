@@ -1,10 +1,10 @@
-package com.example.sfweather.common.databases
+package com.example.sfweather.databases
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.sfweather.common.models.SearchHistory
+import com.example.sfweather.models.SearchHistory
 import io.reactivex.*
 
 @Dao

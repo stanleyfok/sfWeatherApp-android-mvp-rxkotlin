@@ -1,7 +1,7 @@
 package com.example.sfweather.features.weatherHistory
 
-import com.example.sfweather.common.models.SearchHistory
-import com.example.sfweather.common.services.SearchHistoryService
+import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.services.WeatherService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -12,7 +12,7 @@ import org.koin.core.inject
 
 class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     private var view:WeatherHistoryContract.View? = null
-    private val searchHistoryService: SearchHistoryService by inject()
+    private val weatherService: WeatherService by inject()
 
     private var compositeDisposable:CompositeDisposable = CompositeDisposable()
     private var searchHistories: MutableList<SearchHistory>? = null
@@ -29,7 +29,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     }
 
     override fun onViewCreated() {
-        val disposable = searchHistoryService.getAll()
+        val disposable = weatherService.getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(  // named arguments for lambda Subscribers
@@ -72,7 +72,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
         val searchHistory = getSearchHistoryAtPosition(position)
 
         if (searchHistory != null) {
-            val disposable = searchHistoryService.deleteByCityId(searchHistory.cityId)
+            val disposable = weatherService.deleteByCityId(searchHistory.cityId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(  // named arguments for lambda Subscribers

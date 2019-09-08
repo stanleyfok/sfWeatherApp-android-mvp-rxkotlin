@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.sfweather.MainActivity
 import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.adapters.WeatherHistoryRecycleViewAdapter
-import com.example.sfweather.common.models.SearchHistory
+import com.example.sfweather.models.SearchHistory
 import com.example.sfweather.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_weather_history.*
 import kotlinx.android.synthetic.main.fragment_weather_history.view.*

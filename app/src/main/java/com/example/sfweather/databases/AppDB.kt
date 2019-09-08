@@ -1,8 +1,8 @@
-package com.example.sfweather.common.databases
+package com.example.sfweather.databases
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.sfweather.common.models.SearchHistory
+import com.example.sfweather.models.SearchHistory
 
 @Database(entities = [(SearchHistory::class)], version = 1, exportSchema = false)
 abstract class AppDB: RoomDatabase() {

@@ -1,7 +1,7 @@
 package com.example.sfweather.features.weatherHistory
 
 import com.example.sfweather.base.BasePresenter
-import com.example.sfweather.common.models.SearchHistory
+import com.example.sfweather.models.SearchHistory
 
 interface WeatherHistoryContract {
     interface View {

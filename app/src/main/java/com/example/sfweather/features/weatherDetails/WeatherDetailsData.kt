@@ -1,6 +1,6 @@
 package com.example.sfweather.features.weatherDetails
 
-import com.example.sfweather.features.weatherDetails.models.OWResult
+import com.example.sfweather.models.OWResult
 
 data class WeatherDetailsData(val owResult: OWResult) {
     var cityName: String = ""

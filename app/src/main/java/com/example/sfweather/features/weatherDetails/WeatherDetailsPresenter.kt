@@ -1,10 +1,9 @@
 package com.example.sfweather.features.weatherDetails
 
-import com.example.sfweather.features.weatherDetails.models.OWApiError
-import com.example.sfweather.features.weatherDetails.models.OWResult
-import com.example.sfweather.common.models.SearchHistory
-import com.example.sfweather.features.weatherDetails.services.OWService
-import com.example.sfweather.common.services.SearchHistoryService
+import com.example.sfweather.models.OWApiError
+import com.example.sfweather.models.OWResult
+import com.example.sfweather.models.SearchHistory
+import com.example.sfweather.services.WeatherService
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -19,8 +18,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     private var view: WeatherDetailsContract.View? = null
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private val owService: OWService by inject()
-    private val searchHistoryService: SearchHistoryService by inject()
+    private val weatherService: WeatherService by inject()
 
     override fun attachView(view: WeatherDetailsContract.View) {
         this.view = view
@@ -32,20 +30,20 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     }
 
     override fun fetchLastStoredWeather() {
-        val observable = searchHistoryService.getLatest()
+        val observable = weatherService.getLatest()
             .flatMap{ searchHistory ->
-                owService.findByCityId(searchHistory.cityId)
+                weatherService.findWeatherByCityId(searchHistory.cityId)
             }
 
         this.subscribeObservable(observable)
     }
 
     override fun fetchWeatherByCityName(cityName: String) {
-        this.subscribeObservable(owService.findByCityName(cityName))
+        this.subscribeObservable(weatherService.findWeatherByCityName(cityName))
     }
 
     override fun fetchWeatherByCityId(cityId: Int) {
-        this.subscribeObservable(owService.findByCityId(cityId))
+        this.subscribeObservable(weatherService.findWeatherByCityId(cityId))
     }
     //endregion
 
@@ -107,7 +105,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         val timestamp = System.currentTimeMillis() / 1000;
         val searchHistory = SearchHistory(owResult.id, owResult.name, timestamp)
 
-        searchHistoryService.upsert(searchHistory)
+        weatherService.upsert(searchHistory)
             .subscribeOn(Schedulers.io())
             .subscribe()
     }

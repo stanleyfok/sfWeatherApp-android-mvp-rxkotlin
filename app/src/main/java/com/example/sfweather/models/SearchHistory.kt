@@ -1,4 +1,4 @@
-package com.example.sfweather.common.models
+package com.example.sfweather.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
