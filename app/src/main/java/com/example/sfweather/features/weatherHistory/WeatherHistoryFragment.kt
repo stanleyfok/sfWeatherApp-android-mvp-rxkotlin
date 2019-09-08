@@ -17,12 +17,13 @@ import com.example.sfweather.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_weather_history.*
 import kotlinx.android.synthetic.main.fragment_weather_history.view.*
 import com.jakewharton.rxbinding3.view.clicks
+import io.reactivex.disposables.CompositeDisposable
 
 
-class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnClickListener {
+class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View {
     private var presenter: WeatherHistoryContract.Presenter = WeatherHistoryPresenter()
     private lateinit var recycleViewAdapter: WeatherHistoryRecycleViewAdapter
-    private var isEdit: Boolean = false
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     //region life cycle
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,16 +40,9 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //this.editButton.setOnClickListener(this)
-
-        this.editButton.clicks().subscribe{
-            println("here")
-        }
-//        val buttonSub = RxView.clicks(b).subscribe(object : Action1<Void>() {
-//            fun call(aVoid: Void) {
-//                // do some work here
-//            }
-//        })
+        compositeDisposable.add(this.editButton.clicks().subscribe{
+            this.onEditButtonClick()
+        })
 
         presenter.onViewCreated()
     }
@@ -56,6 +50,7 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
     override fun onDestroyView() {
         super.onDestroyView()
 
+        this.compositeDisposable.clear()
         this.presenter.detachView()
     }
     //endregion
@@ -106,21 +101,16 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
     //endregion
 
     //region click listener
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.editButton -> {
-                this.isEdit = !this.isEdit
+    private fun onEditButtonClick() {
+        this.presenter.isEdit = !this.presenter.isEdit
 
-                if (this.isEdit) {
-                    this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_DONE)
-                } else {
-                    this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT)
-                }
-
-                this.recycleViewAdapter.setIsEdit(this.isEdit)
-                this.reloadRecyclerView()
-            }
+        if (this.presenter.isEdit) {
+            this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_DONE)
+        } else {
+            this.editButton.text = resources.getString(R.string.WEATHER_HISTORY_TOOLBAR_BUTTON_EDIT)
         }
+
+        this.reloadRecyclerView()
     }
     //endregion
 }

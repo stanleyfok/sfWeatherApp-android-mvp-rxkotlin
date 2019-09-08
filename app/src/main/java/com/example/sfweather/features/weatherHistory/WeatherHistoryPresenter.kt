@@ -17,6 +17,8 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     private var compositeDisposable:CompositeDisposable = CompositeDisposable()
     private var searchHistories: MutableList<SearchHistory>? = null
 
+    override var isEdit:Boolean = false
+
     override fun attachView(view: WeatherHistoryContract.View) {
         this.view = view
     }
