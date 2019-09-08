@@ -6,6 +6,7 @@ import com.example.sfweather.common.databases.AppDB
 import com.example.sfweather.common.repositories.SearchHistoryRepository
 import com.example.sfweather.features.weatherDetails.services.OWService
 import com.example.sfweather.common.services.SearchHistoryService
+import com.example.sfweather.features.weatherDetails.repositories.OWRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -25,7 +26,8 @@ class WeatherApplication: Application() {
             single { get<AppDB>().searchHistoryDao() }
             single { SearchHistoryService() }
             single { SearchHistoryRepository() }
-            single { OWService.create() }
+            single { OWService() }
+            single { OWRepository.create() }
         }
 
         startKoin {
