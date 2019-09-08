@@ -29,7 +29,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
     }
 
     override fun onViewCreated() {
-        val disposable = weatherService.getAll()
+        val disposable = weatherService.getAllHistories()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(  // named arguments for lambda Subscribers
@@ -72,7 +72,7 @@ class WeatherHistoryPresenter: WeatherHistoryContract.Presenter, KoinComponent {
         val searchHistory = getSearchHistoryAtPosition(position)
 
         if (searchHistory != null) {
-            val disposable = weatherService.deleteByCityId(searchHistory.cityId)
+            val disposable = weatherService.deleteHistoryByCityId(searchHistory.cityId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(  // named arguments for lambda Subscribers

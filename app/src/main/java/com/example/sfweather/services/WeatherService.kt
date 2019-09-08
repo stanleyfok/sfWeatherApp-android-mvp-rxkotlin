@@ -21,19 +21,19 @@ class WeatherService():KoinComponent {
         return this.owRepository.findByCityId(cityId)
     }
 
-    fun getAll():Single<List<SearchHistory>> {
+    fun getAllHistories():Single<List<SearchHistory>> {
         return searchHistoryRepository.getAllHistory()
     }
 
-    fun getLatest(): Single<SearchHistory> {
+    fun getLatestHistory(): Single<SearchHistory> {
         return searchHistoryRepository.getLatestHistory()
     }
 
-    fun upsert(searchHistory: SearchHistory):Completable {
+    fun insertHistory(searchHistory: SearchHistory):Completable {
         return searchHistoryRepository.insertHistory(searchHistory)
     }
 
-    fun deleteByCityId(cityId: Int):Single<Int> {
+    fun deleteHistoryByCityId(cityId: Int):Single<Int> {
         return searchHistoryRepository.deleteHistoryByCityId(cityId)
     }
 }

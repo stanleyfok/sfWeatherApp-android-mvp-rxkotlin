@@ -30,7 +30,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
     }
 
     override fun fetchLastStoredWeather() {
-        val observable = weatherService.getLatest()
+        val observable = weatherService.getLatestHistory()
             .flatMap{ searchHistory ->
                 weatherService.findWeatherByCityId(searchHistory.cityId)
             }
@@ -105,7 +105,7 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
         val timestamp = System.currentTimeMillis() / 1000;
         val searchHistory = SearchHistory(owResult.id, owResult.name, timestamp)
 
-        weatherService.upsert(searchHistory)
+        weatherService.insertHistory(searchHistory)
             .subscribeOn(Schedulers.io())
             .subscribe()
     }
