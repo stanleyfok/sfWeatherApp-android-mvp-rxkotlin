@@ -16,6 +16,8 @@ import com.example.sfweather.common.models.SearchHistory
 import com.example.sfweather.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_weather_history.*
 import kotlinx.android.synthetic.main.fragment_weather_history.view.*
+import com.jakewharton.rxbinding3.view.clicks
+
 
 class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnClickListener {
     private var presenter: WeatherHistoryContract.Presenter = WeatherHistoryPresenter()
@@ -37,7 +39,16 @@ class WeatherHistoryFragment : Fragment(), WeatherHistoryContract.View, View.OnC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.editButton.setOnClickListener(this)
+        //this.editButton.setOnClickListener(this)
+
+        this.editButton.clicks().subscribe{
+            println("here")
+        }
+//        val buttonSub = RxView.clicks(b).subscribe(object : Action1<Void>() {
+//            fun call(aVoid: Void) {
+//                // do some work here
+//            }
+//        })
 
         presenter.onViewCreated()
     }

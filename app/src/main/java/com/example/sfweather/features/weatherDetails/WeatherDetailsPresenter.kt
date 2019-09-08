@@ -57,11 +57,11 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
             .doOnSubscribe{
                 view?.setIsLoading(true)
             }
-            .doFinally {
-                view?.setIsLoading(false)
-            }
             .doAfterSuccess {
                 insertSearchHistory(it)
+            }
+            .doFinally {
+                view?.setIsLoading(false)
             }
             .subscribeBy(  // named arguments for lambda Subscribers
                 onSuccess = {
@@ -71,7 +71,6 @@ class WeatherDetailsPresenter: KoinComponent, WeatherDetailsContract.Presenter {
                     hanleFailure(it)
                 }
             )
-
 
         disposable.addTo(compositeDisposable)
     }

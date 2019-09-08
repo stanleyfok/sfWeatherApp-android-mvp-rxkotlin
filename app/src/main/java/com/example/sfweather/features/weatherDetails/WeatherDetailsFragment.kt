@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import com.example.sfweather.MainActivity
 import com.example.sfweather.R
 import com.example.sfweather.features.weatherHistory.WeatherHistoryFragment
@@ -16,10 +15,15 @@ import android.content.Intent
 import android.widget.ProgressBar
 import com.example.sfweather.constants.AppConstants
 import com.example.sfweather.utils.WeatherUtils
+import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.widget.SearchViewQueryTextEvent
+import com.jakewharton.rxbinding3.widget.queryTextChangeEvents
+import io.reactivex.disposables.CompositeDisposable
 
-class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnClickListener, SearchView.OnQueryTextListener {
+class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View {
     private var presenter: WeatherDetailsContract.Presenter = WeatherDetailsPresenter()
 
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var isRecentSearchLoaded:Boolean = false
     private var cityIdToFetch:Int = -1
 
@@ -35,8 +39,13 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.viewHistoryButton.setOnClickListener(this)
-        this.searchView.setOnQueryTextListener(this)
+        compositeDisposable.add(this.viewHistoryButton.clicks().subscribe{
+            this.onViewHistoryButtonClick()
+        })
+
+        compositeDisposable.add(this.searchView.queryTextChangeEvents().subscribe{
+            this.onQueryTextSubmit(it)
+        })
 
         if (!isRecentSearchLoaded) {
             this.presenter.fetchLastStoredWeather()
@@ -54,6 +63,7 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
     override fun onDestroyView() {
         super.onDestroyView()
 
+        this.compositeDisposable.clear()
         this.presenter.detachView()
     }
 
@@ -72,32 +82,22 @@ class WeatherDetailsFragment : Fragment(), WeatherDetailsContract.View, View.OnC
     //endregion
 
     //region click listener
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.viewHistoryButton -> {
-                val fragment = WeatherHistoryFragment()
-                fragment.setTargetFragment(this, AppConstants.REQ_CODE_FRAGMENT_SEARCH_HISTORY)
+    private fun onViewHistoryButtonClick() {
+        val fragment = WeatherHistoryFragment()
+        fragment.setTargetFragment(this, AppConstants.REQ_CODE_FRAGMENT_SEARCH_HISTORY)
 
-                (activity as MainActivity).replaceFragments(fragment)
-            }
-        }
+        (activity as MainActivity).replaceFragments(fragment)
     }
     //endregion
 
     //region searchView listener
-    override fun onQueryTextSubmit(p0: String?): Boolean {
-        if (p0 != null && p0.isNotEmpty()) {
-            this.presenter.fetchWeatherByCityName(p0)
+    private fun onQueryTextSubmit(event: SearchViewQueryTextEvent) {
+        if (event.isSubmitted) {
+            this.presenter.fetchWeatherByCityName(event.queryText.toString())
             this.searchView.setQuery("", false)
+
+            this.searchView.clearFocus()
         }
-
-        this.searchView.clearFocus()
-
-        return true
-    }
-
-    override fun onQueryTextChange(p0: String?): Boolean {
-        return false
     }
     //endregion
 
