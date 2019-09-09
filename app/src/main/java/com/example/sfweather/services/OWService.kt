@@ -1,4 +1,4 @@
-package com.example.sfweather.repositories
+package com.example.sfweather.services
 
 import com.example.sfweather.BuildConfig
 import com.example.sfweather.models.OWResult
@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface OWRepository {
+interface OWService {
 
     @GET("weather")
     fun findByCityName(@Query("q") cityName: String): Single<OWResult>
@@ -21,7 +21,7 @@ interface OWRepository {
     fun findByCityId(@Query("id") cityId: Int): Single<OWResult>
 
     companion object Factory {
-        fun create(): OWRepository {
+        fun create(): OWService {
             val interceptor = object: Interceptor {
                 override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
                     var request = chain.request()
@@ -47,7 +47,7 @@ interface OWRepository {
                 .client(okHttpClient)
                 .build()
 
-            return retrofit.create(OWRepository::class.java);
+            return retrofit.create(OWService::class.java);
         }
     }
 }
